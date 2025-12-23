@@ -13,7 +13,7 @@ In Colombia, the Hass avocado market is expanding, but retailers struggle with q
 ### 1. The "Rejection Threshold"
 Statistical analysis reveals that sales rejection spikes dramatically when average maturity drops below **2.5 on a 1-5 scale**. This identifies the exact "danger zone" for inventory management.
 
-![Maturity vs Loss](Avocado_Sales_Optimatization/images/maturity_vs_loss.png)  
+![Maturity vs Loss](images/maturity_vs_loss.png)  
 *Figure 1: Correlation between fruit immaturity and lost sales units.*
 
 ### 2. Recovering "Ghost Demand"
