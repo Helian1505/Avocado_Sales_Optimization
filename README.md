@@ -1,44 +1,100 @@
+# 🥑 Avocado Quality ROI — pricing the sale you never see
 
-# 🥑 Avocado Sales Optimization: ROI Analysis for Quality Control Technology
+**Does a COP 150M automated grading investment pay for itself?**
+Short answer: yes, in 99.9% of simulated years — but only 76% of them pay it back within five.
 
-## 📌 Executive Summary
-This project demonstrates how data-driven decisions solve critical logistics and sales bottlenecks in the Colombian retail sector. By analyzing avocado maturity levels, I identified an annual **revenue leakage of $123,321,900 COP**. Implementing an automated grading solution yields a **Project ROI of 29.27%**, with an investment recovery period of **41 months**.
-
-## 💼 The Business Problem
-In Colombia, the Hass avocado market is expanding, but retailers struggle with quality consistency at the point of sale.
-* **The Issue:** Customers reject fruit that is too firm (immature) or overripe, leading to "purchase frustration."
-* **The Goal:** Quantify the financial impact of "unripe fruit" and evaluate the profitability of a **$150M COP investment** in grading technology.
-
-## 📈 Key Insights from Data
-### 1. The "Rejection Threshold"
-Statistical analysis reveals that sales rejection spikes dramatically when average maturity drops below **2.5 on a 1-5 scale**. This identifies the exact "danger zone" for inventory management.
-
-![Maturity vs Loss](images/maturity_vs_loss.png)  
-*Figure 1: Correlation between fruit immaturity and lost sales units.*
-
-### 2. Recovering "Ghost Demand"
-Retailers typically only track physical waste (shrinkage). This project tracks **Lost Demand**: the revenue from customers who intended to buy but walked away. By reducing rejection from 15% to 3%, we unlock a previously invisible revenue stream.
-
-![Revenue Comparison](images/revenue_comparison.png)  
-*Figure 2: Annual Revenue comparison: Current State vs. Optimized Scenario.*
-
-## 💰 Financial Results & ROI
-Through Python-based simulations, the following annual metrics were established:
-| Metric | Value (COP) |
-| :--- | :--- |
-| **Annual Avoided Loss (Gross)** | $98,657,520 |
-| **Annual Operational Cost** | $54,750,000 |
-| **Net Annual Profit** | **$43,907,520** |
-| **Initial Investment** | $150,000,000 |
-| **Payback Period** | **41 Months** |
-
-## 🛠️ Tech Stack & Methodology
-- **Python:** Advanced data simulation (`numpy`), processing (`pandas`), and visualization (`seaborn`/`matplotlib`).
-- **Statistical Modeling:** Normal distribution modeling for ripening cycles.
-- **Business Intelligence:** Financial modeling for ROI and Payback Period projections.
-
-## 🏁 Conclusion & Recommendation
-The investment is **strategically sound**. While the payback period is ~3.4 years, the implementation transforms a recurring quality issue into a measurable competitive advantage. It ensures product-market fit at the shelf level, significantly increasing net profit and customer loyalty.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Helian1505/Avocado_Sales_Optimization/blob/main/Avocado_hass.ipynb)
 
 ---
-**Contact:** **Helian Fierro** [LinkedIn Profile](https://www.linkedin.com/in/helian-fierro-oyola-143798206/)
+
+## The problem
+
+A Colombian retail chain loses Hass avocado sales when the fruit on the shelf is too firm.
+The shopper picks it up, puts it back, and leaves. That loss never reaches a shrinkage
+report, because the fruit was never damaged — the **demand** was. Management could see
+waste; it could not see walk-aways, so a COP 150M grading investment had no business case
+either way.
+
+## What I did
+
+Modelled a full trading year at day level — demand, average shelf maturity, and the
+rejection that follows — then priced the gap between today and a graded scenario, and
+stress-tested the result over 3,000 independent years.
+
+## 1. Where the revenue leaks
+
+![Root cause](images/maturity_vs_loss.png)
+
+Rejection is not gradual. It is zero above maturity 2.5 and roughly 2,300 units a day
+below it. **54 of 365 days** fell below the threshold in the year analysed, costing
+**COP 123,321,900** — 2.25% of annual demand, none of it visible as waste.
+
+That sharp threshold is the whole reason the investment can work: the days worth acting on
+are identifiable in advance.
+
+## 2. The business case
+
+![Business case](images/business_case.png)
+
+The gross saving is not the benefit. Grading does not eliminate rejection — it cuts it from
+15% to 3% — and the machine costs COP 150,000 a day to run:
+
+| | COP |
+| :--- | ---: |
+| Revenue recovered (gross) | 98,657,520 |
+| Annual operating cost | −54,750,000 |
+| **Net annual benefit** | **43,907,520** |
+| Annual ROI | **29.27%** |
+| Payback period | **41 months** |
+
+## 3. How much of that is the model, and how much is the year?
+
+![Sensitivity](images/roi_distribution.png)
+
+Shelf maturity is drawn from a distribution, so a different year has a different number of
+low-maturity days — and the whole case moves with it. Reporting a single ROI as a fact
+would be the real error in this analysis, so I re-ran the model over 3,000 independent
+years:
+
+| | Year analysed | Median | p10 – p90 |
+| :--- | ---: | ---: | ---: |
+| Revenue lost | 123.3M | 116.3M | 97.7M – 135.7M |
+| Net benefit | 43.9M | 38.3M | 23.4M – 53.8M |
+| Annual ROI | 29.27% | 25.50% | 15.63% – 35.86% |
+| Payback | 41 months | 47 months | 33 – 77 months |
+
+The year analysed sits at the **67th percentile** — a normal draw, not a best case.
+
+## Recommendation
+
+**Make the investment, and size the expectation correctly.** The case is profitable in
+99.9% of simulated years, so the risk is not losing money — it is *waiting* for it. Only
+~76% of years pay back inside five. If the approval threshold is a five-year payback, this
+is a decision under uncertainty and should be presented as a range, not a single number.
+
+**What would change the answer:** the rejection rates (15% today, 3% graded) are
+assumptions, not measurements. They move the result more than anything else in the model
+and are worth measuring in one store for a quarter before capital is committed.
+
+## Reproducing this
+
+```bash
+pip install pandas numpy matplotlib
+jupyter notebook Avocado_hass.ipynb   # runs end to end in under a minute
+```
+
+**On the dataset:** `data/avocado_simulated_data.csv` is one simulated trading year and it
+is the canonical input — every headline figure above is computed from it. The original draw
+was made without a random seed, so it cannot be regenerated; it is version-controlled
+instead. `simulate_year(seed)` in the notebook produces a different, equally valid year,
+which is exactly what section 3 relies on.
+
+## Tech stack
+
+- **Python** — pandas, NumPy for the simulation and the financial model
+- **Monte Carlo sensitivity** — 3,000 seeded years, reported as median and p10–p90
+- **Matplotlib** — waterfall, threshold scatter and distribution charts
+
+---
+
+**Helian Fierro** · [LinkedIn](https://www.linkedin.com/in/helianfierro/) · [GitHub](https://github.com/Helian1505)
